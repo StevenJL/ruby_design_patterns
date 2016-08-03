@@ -3,12 +3,12 @@
 
 ## Design Patterns (the books)
 
-Read [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452), which was inspired by the Gang of Four's ["Design Patterns: Elements of Reusable Object-Oriented Software"](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/B000SEIBB8), which
+Read Russ Olsen's [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452), which was inspired by the Gang of Four's ["Design Patterns: Elements of Reusable Object-Oriented Software"](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/B000SEIBB8), which
 you should read too.  But if you don't have the time to read, here's a synoposis.  It may be helpful.
 
 ### The Meta Pattern
 
-**Don't use a design pattern just for the sake of using a design pattern.  Use a design pattern because it genuinue adds flexibility and maintainable to your code base.**
+**Don't use a design pattern just for the sake of using a design pattern.  Use a design pattern because it genuinuely adds flexibility and maintainable to your code base.**
 
 ### Template Pattern
 
@@ -190,7 +190,7 @@ end
 
 Again, we can use blocks if we don't want to instantiate observer objects.
 
-```
+```ruby
 class DelinquentPayment
   def add_obsever(&observer)
     @observers << observer

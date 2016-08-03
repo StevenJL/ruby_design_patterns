@@ -213,4 +213,62 @@ delinquent_payment.add_observer do |delinquent_payment|
 end
 ```
 
+### The Adapter Pattern
+
+**Definition:** A "client" class wants to invoke a bunch of "target" classes.  The target classes have similar functions
+but different interfaces.  Adapter classes wrap these target classes so they have a common interface.
+
+**Example:** An OrderShipper class (the client) that calls order classes (targets) through adapters
+
+```ruby
+class OrderShipper
+  def ship(order)
+    weight_lbs = order.shipping_weight_lbs
+    cost_in_dollars = order.shipping_cost_dollars
+    length_inches = order.length_inches
+
+    # ships the order with the above variables
+  end
+end
+
+class Order
+  attr_reader :shipping_weight_lbs, :shipping_cost_dollars, :length_inches
+
+  # other logic pertaining to orders
+end
+
+class EuropeanOrder
+  attr_reader :shipping_weight_kg, :shipping_cost_euro, :length_cm
+end
+
+class EuropeanOrderAdapter < Order
+  def initialize(eo)
+    @eo = eo
+  end
+
+  def shipping_weight_lbs
+    @eo.shipping_weight_kg * KG_TO_LB_CONVERSION
+  end
+
+  def shipping_cost_dollars
+    @eo.shipping_cost_euro * euro_to_dollar_exchange_rate
+  end
+
+  def length_inches
+    @eo.length_cm * CM_TO_INCHES_CONVERSION
+  end
+end
+
+## If its a regular order, we can just put it in the OrderShipper
+order = Order.new
+OrderShipper.new.ship(order)
+
+## If its a European order, wrap it in the adapter first
+euro_order = EuropeanOrder.new
+euro_order_adapter = EuropeanOrderAdapter.new(euro_order)
+OrderShipper.new.ship(euro_order_adapter)
+```
+
+
+
 

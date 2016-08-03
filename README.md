@@ -151,7 +151,7 @@ class Customer
 end
 
 class Finance
-  def update(order)
+  def update(delinquent_payment)
     # Informs finance department of delinquent payment status change
   end
 end
@@ -215,7 +215,7 @@ end
 
 ### The Adapter Pattern
 
-**Definition:** A "client" class wants to invoke a bunch of "target" classes.  The target classes have similar functions
+**Definition:** A "client" class wants to invoke a variety of "target" classes.  These target classes have similar functions
 but different interfaces.  Adapter classes wrap these target classes so they have a common interface.
 
 **Example:** An OrderShipper class (the client) that calls order classes (targets) through adapters
@@ -268,7 +268,4 @@ euro_order = EuropeanOrder.new
 euro_order_adapter = EuropeanOrderAdapter.new(euro_order)
 OrderShipper.new.ship(euro_order_adapter)
 ```
-
-
-
 

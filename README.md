@@ -205,12 +205,71 @@ class DelinquentPayment
 end
 
 delinquent_payment.add_observer do |delinquent_payment|
-  # code informs finance department of delinquent payment status change
+  # code that informs finance department of delinquent payment status change
 end
 
 delinquent_payment.add_observer do |delinquent_payment|
-  # code informs customer of delinquent payment status change
+  # code that informs customer of delinquent payment status change
 end
+```
+
+### The Command Pattern
+**Definition:** Factoring out action code into a "command" class, which runs the action code through public `execute` method. We then pass these command classes into
+client classes during instantiation.  This way, we separate out the action logic from the client that calls the action.
+
+**Example:**  E-commerce order UI buttons.
+
+```ruby
+# A button class (the client which uses the command classes)
+class Button
+  attr_accessor :command
+
+  def initialize(command)
+    @command = command
+  end
+
+  # code related to rendering button
+
+  def on_button_push
+    @command.execute
+  end
+end
+
+# The command classes
+
+class NewOrderCommand
+  def execute
+    # logic for editing the order
+  end
+end
+
+class EditOrderCommand
+  def execute
+    # logic for editing the order
+  end
+end
+
+class SaveOrderCommand
+  def execute
+    # logic for saving the order
+  end
+end
+
+class DeleteOrderCommand
+  def execute
+    # logic for editing the order
+  end
+end
+
+new_order_button = Button.new(NewOrderCommand.new)
+edit_order_button = Button.new(EditOrderCommand.new)
+save_order_button = Button.new(SaveOrderCommand.new)
+delete_order_button = Button.new(DeleteOrderCommand.new)
+
+# Note if we didn't use the command pattern and instead opted for one button class
+# per type of button, we would have four button classes:
+# `NewOrderButton`, `EditOrderButton`, `SaveOrderButton`, `DeleteOrderButton`
+# And as we add more types of buttons, we would have to create even more button classes!
 ```
 
 ### The Adapter Pattern
@@ -259,7 +318,7 @@ class EuropeanOrderAdapter < Order
   end
 end
 
-## If its a regular order, we can just put it in the OrderShipper
+## If its a regular US order, we can just put it in the OrderShipper
 order = Order.new
 OrderShipper.new.ship(order)
 
@@ -268,4 +327,5 @@ euro_order = EuropeanOrder.new
 euro_order_adapter = EuropeanOrderAdapter.new(euro_order)
 OrderShipper.new.ship(euro_order_adapter)
 ```
+
 

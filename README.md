@@ -6,9 +6,11 @@
 Read Russ Olsen's [Design Patterns in Ruby](https://www.amazon.com/Design-Patterns-Ruby-Russ-Olsen/dp/0321490452), which was inspired by the Gang of Four's ["Design Patterns: Elements of Reusable Object-Oriented Software"](https://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/B000SEIBB8), which
 you should read too.  But if you don't have the time to read, here's a synoposis.  It may be helpful.
 
-### The Meta Pattern
+### The Meta Patterns
 
 **Don't use a design pattern just for the sake of using a design pattern.  Use a design pattern because it genuinuely adds flexibility and maintainable to your code base.**
+
+**These patterns are all motivated by the principle of separating that which is changing from that which is unchanging**
 
 ### Template Pattern
 
@@ -54,7 +56,7 @@ class OrderFulfiller
   end
 
   def perform
-    ...
+    # ...
     @shipper.ship(order)
   end
 end
@@ -101,7 +103,7 @@ class OrderFulfiller
   end
 
   def perform
-    ...
+    # ...
     @shipper.call(order)
   end
 end
@@ -274,7 +276,7 @@ delete_order_button = Button.new(DeleteOrderCommand.new)
 
 ### The Adapter Pattern
 
-**Definition:** A "client" class wants to invoke a variety of "target" classes.  These target classes have similar functions
+**Definition:** A "client" class wants to invoke a variety of "target" classes.  These target classes have similar underlying functionality
 but different interfaces.  Adapter classes wrap these target classes so they have a common interface.
 
 **Example:** An OrderShipper class (the client) that calls order classes (targets) through adapters
@@ -328,4 +330,77 @@ euro_order_adapter = EuropeanOrderAdapter.new(euro_order)
 OrderShipper.new.ship(euro_order_adapter)
 ```
 
+### The Proxy Patterns
+
+**Definition:** A "proxy" object's interface is exactly like the "real" object it stands in for except it also contains some other logic that is outside
+of the concern of the "real" object.  This logic can be authentication, network packaging, lazy execution.  We will explore each of these in these sub-patterns.
+
+##### The Protection Proxy
+
+**Definition:**  The protection proxy ensures the message will be sent to the real object is authorized.  This keeps the protection logic outside
+of the real object.
+
+**Example:** Protect a user account through the protection proxy.
+
+```ruby
+class AccountInfo
+  # sensitive account methods
+
+  def update_payment
+  end
+
+  def update_address
+  end
+end
+
+class ProtectionProxy
+  def initialize(real)
+    @real = @real
+  end
+
+  def method_missing(name, *args)
+    authorize
+    @real.send(name, *args)
+  end
+
+  private
+
+  def authorize
+    # authorization logic
+  end
+end
+
+account_info = AccountInfo.new(options)
+protected_account_info = ProtectionProxy.new(account_info)
+
+# Note how generic the ProtectionProxy is.  We can use it to protect objects other than AccountInfo
+payment_info = PaymentInfo.new(options)
+protected_payment_info = ProtectionProxy.new(payment_info)
+```
+
+##### The Lazy Proxy
+
+**Definition:**  The lazy proxy stands in for the real object and delays the creation of the real object until a message needs to be passed to it.
+
+```ruby
+class LazyProxy
+  def initialize(&creation_block)
+    @creation_block = creation_block
+  end
+
+  def method_missing(name, *args)
+    account_info = real
+    account_info.send(name, *args)
+  end
+
+  def real
+    @real ||= @creation_block.call
+  end
+end
+
+# Instantiate by passing a block which creates an account
+lazy_account = LazyProxy.new do
+  Account.new(options)
+end
+```
 
